@@ -1,0 +1,47 @@
+# version: "3.9"
+# services:
+#   mongo:
+#     image: mongo:7
+#     container_name: mongo-a      # কন্টেইনারের নাম এখানে দিন
+#     restart: always
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - mongo_data:/data/db
+#   redis:
+#     image: redis:7
+#     container_name: redis-a     # কন্টেইনারের নাম এখানে দিন
+#     restart: always
+#     ports:
+#       - "6379:6379"
+#     command: ["redis-server", "--appendonly", "yes"]
+# volumes:
+#   mongo_data:
+
+
+version: "3.9"
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo-a
+    ports: ["27017:27017"]
+    volumes: [ "mongo_data:/data/db" ]
+    restart: always
+
+  redis:
+    image: redis:7
+    container_name: redis-a
+    ports: ["6379:6379"]
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: always
+
+  api:
+    build: .
+    container_name: api-a
+    env_file: .env
+    ports: ["3000:3000"]
+    depends_on: [mongo, redis]
+    restart: always
+volumes:
+  mongo_data:
+
